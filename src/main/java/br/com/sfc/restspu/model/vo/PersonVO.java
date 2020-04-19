@@ -1,39 +1,31 @@
-package br.com.sfc.restspu.model;
+package br.com.sfc.restspu.model.vo;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.springframework.hateoas.RepresentationModel;
 
-import javax.persistence.*;
 import java.io.Serializable;
 
 @Data
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Entity
-public class Person implements Serializable {
+public class PersonVO extends RepresentationModel<PersonVO> implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @EqualsAndHashCode.Include
-    @Column(nullable = false, length = 100)
     private String firstName;
 
     @EqualsAndHashCode.Include
-    @Column(nullable = false, length = 100)
     private String lastName;
 
     @EqualsAndHashCode.Include
-    @Column(nullable = false, length = 100)
     private String address;
 
     @EqualsAndHashCode.Include
-    @Column(nullable = false, length = 6)
     private String gender;
 
-    @Column(nullable = false)
     private Boolean enabled;
 
 }
