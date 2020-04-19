@@ -1,59 +1,56 @@
 package br.com.sfc.restspu.service;
 
+import br.com.sfc.restspu.exception.ResourceNotFoundException;
 import br.com.sfc.restspu.model.Person;
+import br.com.sfc.restspu.model.converter.DozerConverter;
+import br.com.sfc.restspu.model.vo.PersonVO;
+import br.com.sfc.restspu.repository.PersonRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 public class PersonService {
 
-    private final AtomicLong counter = new AtomicLong();
+    @Autowired
+    private PersonRepository personRepository;
 
-    public Person create(Person person) {
-        return person;
+    public PersonVO create(PersonVO person) {
+        var entity = DozerConverter.parseObject(person, Person.class);
+        var vo = DozerConverter.parseObject(personRepository.save(entity), PersonVO.class);
+
+        return vo;
     }
 
-    public Person update(Person person) {
-        return person;
+    public PersonVO update(PersonVO person) {
+        var personEntity = personRepository.findById(person.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("No recrods found for this ID"));
+
+        personEntity.setGender(person.getGender());
+        personEntity.setAddress(person.getAddress());
+        personEntity.setFirstName(person.getFirstName());
+        personEntity.setLastName(person.getLastName());
+
+        return DozerConverter.parseObject(personRepository.save(personEntity), PersonVO.class);
     }
 
-    public void deleteById(String id) {
+    public void deleteById(Long id) {
+        Person personEntity = personRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("No recrods found for this ID"));
+
+        personRepository.deleteById(id);
     }
 
-    public Person findById(String id) {
-        Person person = new Person();
-        person.setId(counter.incrementAndGet());
-        person.setFirstName("Sandney");
-        person.setLasttName("Farias");
-        person.setAddress("Maeció - Alagoas - Brasil");
-        person.setGender("Male");
+    public PersonVO findById(Long id) {
+        var entity = personRepository.findById(id).
+                orElseThrow(() -> new ResourceNotFoundException("No recrods found for this ID"));
 
-        return person;
+        return DozerConverter.parseObject(entity, PersonVO.class);
     }
 
-    public List<Person> findAll() {
-        List<Person> persons = new ArrayList<Person>();
-
-        for (int i = 0; i<= 8; i++) {
-            Person person1 = mockPerson(i);
-            persons.add(person1);
-        }
-
-        return persons;
-    }
-
-    private Person mockPerson(int id) {
-        Person person1 = new Person();
-        person1.setId(counter.incrementAndGet());
-        person1.setFirstName("Sandney " + id);
-        person1.setLasttName("Farias " + id);
-        person1.setAddress("Maeció - Alagoas - Brasil " + id);
-        person1.setGender("Male "  + id);
-
-        return person1;
+    public List<PersonVO> findAll() {
+        return DozerConverter.parseListObjects(personRepository.findAll(), PersonVO.class);
     }
 
 }

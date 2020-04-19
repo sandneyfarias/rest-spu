@@ -1,6 +1,7 @@
 package br.com.sfc.restspu.exception.handler;
 
 import br.com.sfc.restspu.exception.ExcpetionResponse;
+import br.com.sfc.restspu.exception.InvalidJwtAuthenticationException;
 import br.com.sfc.restspu.exception.UnsuportedMathOperationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +29,17 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
 
     @ExceptionHandler(UnsuportedMathOperationException.class)
     public final ResponseEntity<ExcpetionResponse> handleBadRequestExcpetions(Exception ex, WebRequest request) {
+        ExcpetionResponse excpetionResponse =
+                new ExcpetionResponse(new Date(),
+                        ex.getMessage(),
+                        request.getDescription(false));
+
+        return new ResponseEntity<>(excpetionResponse, HttpStatus.BAD_REQUEST);
+    }
+
+
+    @ExceptionHandler(InvalidJwtAuthenticationException.class)
+    public final ResponseEntity<ExcpetionResponse> invalidJwtAuthenticationException(Exception ex, WebRequest request) {
         ExcpetionResponse excpetionResponse =
                 new ExcpetionResponse(new Date(),
                         ex.getMessage(),

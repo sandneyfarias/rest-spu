@@ -557,3 +557,8 @@ healthchecksdb
 MigrationBackup/
 
 # End of https://www.gitignore.io/api/java,maven,eclipse,intellij,visualstudio,visualstudiocode
+/.idea/
+/.vscode/
+/HELP.md
+/mvnw
+/mvnw.cmd
