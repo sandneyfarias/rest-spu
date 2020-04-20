@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.hateoas.RepresentationModel;
 
 import java.io.Serializable;
+import java.util.BitSet;
 
 @Data
 @NoArgsConstructor
@@ -26,6 +27,6 @@ public class PersonVO extends RepresentationModel<PersonVO> implements Serializa
     @EqualsAndHashCode.Include
     private String gender;
 
-    private Boolean enabled;
+    private Integer enabled;
 
 }

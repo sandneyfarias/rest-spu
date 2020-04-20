@@ -8,6 +8,7 @@ import br.com.sfc.restspu.repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
@@ -33,6 +34,15 @@ public class PersonService {
         personEntity.setLastName(person.getLastName());
 
         return DozerConverter.parseObject(personRepository.save(personEntity), PersonVO.class);
+    }
+
+    @Transactional
+    public PersonVO disablePersonById(Long id) {
+        personRepository.disablePerson(id);
+        var entity = personRepository.findById(id).
+                orElseThrow(() -> new ResourceNotFoundException("No recrods found for this ID"));
+
+        return DozerConverter.parseObject(entity, PersonVO.class);
     }
 
     public void deleteById(Long id) {

@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.BitSet;
 
 @Data
 @NoArgsConstructor
@@ -34,6 +35,6 @@ public class Person implements Serializable {
     private String gender;
 
     @Column(nullable = false)
-    private Boolean enabled;
+    private Integer enabled;
 
 }

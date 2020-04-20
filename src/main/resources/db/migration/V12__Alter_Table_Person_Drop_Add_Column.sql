@@ -1,0 +1,5 @@
+ALTER TABLE person
+	DROP COLUMN enabled;
+
+ALTER TABLE person
+	ADD COLUMN enabled INTEGER NOT NULL DEFAULT 1;
