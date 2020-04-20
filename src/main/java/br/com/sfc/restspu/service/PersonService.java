@@ -6,10 +6,11 @@ import br.com.sfc.restspu.model.converter.DozerConverter;
 import br.com.sfc.restspu.model.vo.PersonVO;
 import br.com.sfc.restspu.repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.List;
 
 @Service
 public class PersonService {
@@ -59,8 +60,13 @@ public class PersonService {
         return DozerConverter.parseObject(entity, PersonVO.class);
     }
 
-    public List<PersonVO> findAll() {
-        return DozerConverter.parseListObjects(personRepository.findAll(), PersonVO.class);
+    public Page<PersonVO> findAll(Pageable pageable) {
+        var page = personRepository.findAll(pageable);
+        return page.map(this::convertToPersonVO);
+    }
+
+    private PersonVO convertToPersonVO(Person entity) {
+        return DozerConverter.parseObject(entity, PersonVO.class);
     }
 
 }

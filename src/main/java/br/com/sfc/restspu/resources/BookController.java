@@ -2,12 +2,17 @@ package br.com.sfc.restspu.resources;
 
 import br.com.sfc.restspu.model.vo.BookVO;
 import br.com.sfc.restspu.service.BookService;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedModel;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -27,12 +32,14 @@ public class BookController {
         return BookVO;
     }
 
+    @Operation(summary = "Return all books")
     @GetMapping(produces = { "application/json", "application/xml", "application/x-yaml"})
-    public List<BookVO> findAll() {
-        List<BookVO> BookVOS = bookService.findAll();
-        BookVOS.stream().forEach(p -> p.add(linkTo(methodOn(BookController.class)
-                .findById(p.getId())).withSelfRel()));
-        return BookVOS;
+    public ResponseEntity<PagedModel<BookVO>> findAll(@RequestParam(value = "page", defaultValue = "0") int page,
+                                                        @RequestParam(value = "limit", defaultValue = "12") int limit,
+                                                        @RequestParam(value = "direction", defaultValue = "asc") String direction,
+                                                        PagedResourcesAssembler assembler) {
+        Page<BookVO> bookVOS = bookService.findAll(page, limit, direction);
+        return new ResponseEntity<>(assembler.toModel(bookVOS), HttpStatus.OK);
     }
 
     @PostMapping(produces = { "application/json", "application/xml", "application/x-yaml"},
